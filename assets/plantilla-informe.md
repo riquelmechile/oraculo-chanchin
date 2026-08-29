@@ -22,13 +22,13 @@ Manos leídas · [dominante / ambas / cuál falta]
 [Camino de Vida y su relación con Expresión, brecha Alma/Personalidad, deudas o lecciones, pináculo y desafío vigentes]
 
 ### 5. Donde no calza
-[Contradicciones entre registros, explícitas]
+[Usar divergencias del bloque Cruce automático. Contradicciones explícitas.]
 
 ### 6. Lo que no está
 [Elementos escasos, dioses ausentes, lecciones kármicas, dónde se compensa]
 
-### 7. Yangsheng (ritmo, no clínica)
-[Un párrafo. Estación de nacimiento + elemento escaso/saturado + un hábito de *Neijing* o 调候. Sin nombres de enfermedad. Sin hierbas.]
+### 7. Yangsheng y tratado (experimento, no clínica)
+[Clima 穷通宝鉴 + zangfu/enfermedades de 三命通会 + 食疗 nombrada sin dosis + hábito de estación. Cerrar: no es diagnóstico ni receta.]
 
 ### 8. Cierre
 [Una pregunta abierta o una tensión sin resolver. Nunca un resumen halagador.]
@@ -36,4 +36,4 @@ Manos leídas · [dominante / ambas / cuál falta]
 ---
 
 **Nota de encuadre**
-Esto es lenguaje simbólico de tradiciones antiguas (quiromancia, BaZi, *黄帝内经*, numerología), no predicción ni diagnóstico médico. Sirve para mirarse, no para decidir por ti ni para sustituir a un médico.
+Esto es un experimento de interpretación simbólica con IA y tradiciones históricas (quiromancia, BaZi, *黄帝内经*, numerología). No constituye verdad, diagnóstico médico ni predicción. Sirve para mirarse, no para decidir por ti ni para sustituir a un médico.

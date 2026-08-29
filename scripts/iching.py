@@ -158,6 +158,18 @@ def interpret(values: list[int], pregunta: str, metodo: str) -> dict:
     pres = describe(present_bin)
     nuc = describe(nuclear(present_bin))
     res = describe(result_bin) if changing else None
+    from iching_salud import paquete_hex
+    salud_pres = paquete_hex(
+        pres["numero"], pres["inferior"]["nombre"], pres["superior"]["nombre"], changing
+    )
+    salud_nuc = paquete_hex(
+        nuc["numero"], nuc["inferior"]["nombre"], nuc["superior"]["nombre"], None
+    )
+    salud_res = None
+    if res:
+        salud_res = paquete_hex(
+            res["numero"], res["inferior"]["nombre"], res["superior"]["nombre"], None
+        )
     return {
         "pregunta": pregunta,
         "metodo": metodo,
@@ -166,9 +178,13 @@ def interpret(values: list[int], pregunta: str, metodo: str) -> dict:
         "nucleo": nuc,
         "lineas_mutantes": changing,
         "resultante": res,
+        "salud_presente": salud_pres,
+        "salud_nucleo": salud_nuc,
+        "salud_resultante": salud_res,
         "nota": (
             "El I Ching describe la fase y la palanca. No predice el resultado. "
-            "Si el núcleo contradice al hexagrama aparente, el núcleo manda en la lectura."
+            "Si el núcleo contradice al hexagrama aparente, el núcleo manda en la lectura. "
+            "La capa 医易 nombra órganos, enfermedades y 食疗 de tratado; no es clínica."
         ),
     }
 
@@ -193,7 +209,39 @@ def render_text(data: dict) -> str:
         lines.append(f"Resultante (之卦 = hexagrama que sigue): {hx(data['resultante'])}")
     else:
         lines.append("Sin líneas mutantes — la situación es estable.")
+
+    def bloque_salud(titulo: str, s: dict | None) -> list[str]:
+        if not s:
+            return []
+        try:
+            from glosario import herbs as zh_herbs, patrons as zh_patrons
+        except Exception:
+            zh_herbs = lambda xs: ", ".join(xs)
+            zh_patrons = lambda xs: "; ".join(xs)
+        out = [
+            "",
+            f"=== 医易 {titulo} ===",
+            f"Eje: {s.get('eje') or '—'}",
+            f"Zona inferior ({s.get('inferior')}): {s.get('zona_inferior')} · {s.get('zangfu_inferior')}",
+            f"Zona superior ({s.get('superior')}): {s.get('zona_superior')} · {s.get('zangfu_superior')}",
+            "Patrones: " + zh_patrons(s.get("patrones") or []),
+            "Enfermedades de tratado:",
+            *[f"  - {e}" for e in (s.get("enfermedades") or [])],
+            "Hierbas: " + zh_herbs(s.get("hierbas") or []),
+            "Alimentos: " + ", ".join(s.get("alimentos") or []),
+            "Consejos:",
+            *[f"  - {c}" for c in (s.get("consejos") or [])],
+        ]
+        if s.get("zonas_mutantes"):
+            out.append("Zonas de líneas mutantes: " + "; ".join(s["zonas_mutantes"]))
+        return out
+
+    lines += bloque_salud("presente", data.get("salud_presente"))
+    lines += bloque_salud("núcleo", data.get("salud_nucleo"))
+    if data.get("salud_resultante"):
+        lines += bloque_salud("resultante", data.get("salud_resultante"))
     lines += ["", data["nota"]]
+    lines.append("ENCUADRE: experimento 医易. Vocabulario de tratado, no verdad clínica, no receta, no predicción.")
     return "\n".join(lines)
 
 

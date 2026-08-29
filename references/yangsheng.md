@@ -8,8 +8,9 @@ Su función dentro de Oráculo Chanchín es traducir una lectura simbólica a h�
 
 - Nombrar qué fase está escasa o saturada dentro del cálculo BaZi.
 - Describir si el mes tradicional se interpreta como frío, caliente, húmedo o seco.
+- Listar las enfermedades, patrones y órganos que el tratado asocia a ese tallo, fase, clima y diez dioses.
+- Nombrar hierbas, tés y alimentos de 食疗, con consejo de escuela y sin dosis.
 - Relacionar esa lectura con descanso, horarios, movimiento, luz y moderación.
-- Usar estaciones como metáfora organizada del ritmo.
 
 ## Qué no puede hacer
 

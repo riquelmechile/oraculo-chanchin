@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
-from glosario import t as zh, stems as zh_stems, patrons as zh_patrons
+from glosario import t as zh, stems as zh_stems, patrons as zh_patrons, herbs as zh_herbs
 from glosario import ganzhi as zh_gz
 
 STEMS = list("甲乙丙丁戊己庚辛壬癸")
@@ -436,7 +436,7 @@ def _stems_in_chart(pillars: dict, has_hour: bool) -> set[str]:
 def _tiaohou(month_branch: int, elements: dict, lon: float, tz: str,
              day_stem: int | None = None, pillars: dict | None = None,
              has_hour: bool = False) -> dict:
-    """Capa de ajuste climático tradicional, sin inferencias médicas personalizadas."""
+    """Clima 穷通宝鉴 + vocabulario de tratado 三命通会 / 食疗. No es clínica."""
     clima = CLIMA_MES.get(month_branch, "templado")
     fire = elements.get("Fuego", 0)
     water = elements.get("Agua", 0)
@@ -461,7 +461,8 @@ def _tiaohou(month_branch: int, elements: dict, lon: float, tz: str,
     inv = {"primavera": "otono", "verano": "invierno", "otono": "primavera", "invierno": "verano"}
     est_local = inv[est_norte] if sur else est_norte
 
-    from tiaohou_data import QTBJ, STEMS as TH_STEMS, ZANGFU
+    from tiaohou_data import QTBJ, STEMS as TH_STEMS
+    from tratado_salud import paquete as paquete_salud
 
     row = QTBJ.get((day_stem, month_branch)) if day_stem is not None else None
     presentes = _stems_in_chart(pillars, has_hour) if pillars else set()
@@ -475,7 +476,27 @@ def _tiaohou(month_branch: int, elements: dict, lon: float, tz: str,
                 faltan.append(stem)
 
     dm_char = TH_STEMS[day_stem] if day_stem is not None else None
-    zf = ZANGFU.get(dm_char, {}) if dm_char else {}
+    dioses = []
+    if pillars:
+        keys = ("year", "month", "day") + (("hour",) if has_hour else ())
+        for k in keys:
+            p = pillars.get(k) or {}
+            g = p.get("dios_tallo")
+            if g and g != "日主":
+                dioses.append(g)
+            for o in p.get("ocultos") or []:
+                if o.get("dios") and o["dios"] != "日主":
+                    dioses.append(o["dios"])
+    # únicos, priorizando los que más salen
+    rank = {}
+    for g in dioses:
+        rank[g] = rank.get(g, 0) + 1
+    dioses_top = sorted(rank, key=lambda g: -rank[g])[:4]
+
+    pack = paquete_salud(dm_char, clima, scarce, top, dioses_top, faltan)
+    zf = pack["zangfu"]
+    sl_hierbas = pack["hierbas"]
+    sl_alim = pack["alimentos"]
 
     parrafo = (
         f"Tabla {zh('穷通宝鉴')}: {zh(dm_char or '')} en mes {zh(BRANCHES[month_branch])} ({clima}). "
@@ -483,11 +504,15 @@ def _tiaohou(month_branch: int, elements: dict, lon: float, tz: str,
         f"{'Nota: ' + row['nota'] if row else ''} "
         f"En la carta están {zh_stems(x['tallo'] for x in yongshen if x['presente']) or 'ninguno'}. "
         f"Faltan {zh_stems(faltan) or 'ninguno'}. "
-        f"Correspondencia histórica del Amo: {zf.get('fu')}/{zf.get('zang')}; "
-        f"patrones del tratado: {zh_patrons(zf.get('patrones') or [])}. "
+        f"Vocabulario {zh('三命通会')} del Amo: {zf.get('fu')}/{zf.get('zang')}; "
+        f"patrones: {zh_patrons(pack['patrones'])}; "
+        f"enfermedades que nombra el tratado: {', '.join(pack['enfermedades'])}. "
+        f"{zh('食疗')} (se nombra, no se dosifica): hierbas {zh_herbs(sl_hierbas)}; "
+        f"té {'; '.join(pack['tes']) or '—'}; alimentos {', '.join(sl_alim)}. "
+        f"Consejos de tratado: {' | '.join(pack['consejos'][:4])}. "
         f"{HABITO_CLIMA[clima]} "
         f"Estación local ({'sur' if sur else 'norte'} {est_local}): {ESTACION_NEIJING[est_local]} "
-        "Las correspondencias zangfu son vocabulario histórico-simbólico, no diagnóstico médico."
+        "ENCUADRE: vocabulario de tratado + cálculo interno, no verdad clínica ni receta."
     )
     return {
         "rama_mes": BRANCHES[month_branch],
@@ -498,12 +523,31 @@ def _tiaohou(month_branch: int, elements: dict, lon: float, tz: str,
         "yongshen": yongshen,
         "yongshen_nota": row["nota"] if row else "",
         "yongshen_faltan": faltan,
-        "zangfu_historico": {
+        "zangfu_tratado": {
             "fu": zf.get("fu"),
             "zang": zf.get("zang"),
             "tejidos": zf.get("tejidos"),
-            "patrones": zf.get("patrones", []),
-            "nota": "Correspondencia histórica-simbólica; no diagnóstico.",
+            "emocion": zf.get("emocion"),
+            "sentido": zf.get("sentido"),
+            "sabor": zf.get("sabor"),
+            "patrones": pack["patrones"],
+            "enfermedades_tratado": pack["enfermedades"],
+            "nota": "Vocabulario de tratado. No es diagnóstico de laboratorio.",
+        },
+        "shiliao": {
+            "alimentos": sl_alim,
+            "hierbas": sl_hierbas,
+            "te": "; ".join(pack["tes"]),
+            "evitar": pack["evitar"],
+            "consejos": pack["consejos"],
+            "nota": "Se nombra. No se dosifica. No sustituye a un herbolario titulado.",
+        },
+        "capas_tratado": {
+            "fase_escasa": scarce,
+            "fase_saturada": top,
+            "clima": clima,
+            "dioses": dioses_top,
+            "yongshen_faltan": faltan,
         },
         "fuego_pct": fire,
         "agua_pct": water,
@@ -520,7 +564,7 @@ def _tiaohou(month_branch: int, elements: dict, lon: float, tz: str,
         "habito_estacion_ahora": ESTACION_NEIJING[est_local],
         "parrafo": parrafo,
         "aproximacion": False,
-        "fuente": "穷通宝鉴 × 黄帝内经 como marco histórico-cultural. Sin diagnóstico ni receta.",
+        "fuente": "穷通宝鉴 × 三命通会 × 食疗 × 黄帝内经. Experimento simbólico: se nombra el tratado, no se diagnostica ni se receta.",
     }
 
 
@@ -646,10 +690,11 @@ def render_text(c: Chart) -> str:
             f"{lp['elemento_tallo']}  {zh(lp['dios'])}"
         )
     th = c.tiaohou
-    zhctx = th.get("zangfu_historico", {})
+    zf = th.get("zangfu_tratado", {})
+    sl = th.get("shiliao", {})
     lines += [
         "",
-        "=== Ajuste climático simbólico (调候 / 穷通宝鉴) ===",
+        "=== Ajuste climático (调候 / 穷通宝鉴) ===",
         f"Amo {zh(th.get('amo') or '')} en mes {zh(th['rama_mes'])} · clima {th['clima_mes']}",
         th.get("yongshen_nota") or "",
         "Dios útil (用神): " + ", ".join(
@@ -657,10 +702,25 @@ def render_text(c: Chart) -> str:
             for y in th.get("yongshen") or []
         ),
         "Faltan: " + (zh_stems(th.get("yongshen_faltan") or []) or "ninguno"),
-        f"Correspondencia histórica: {zhctx.get('fu')} / {zhctx.get('zang')} ({zhctx.get('tejidos', '')})",
-        "Patrones históricos: " + zh_patrons(zhctx.get("patrones") or []),
+        "",
+        "=== Vocabulario de tratado (三命通会 × 黄帝内经) ===",
+        f"Correspondencia: {zf.get('fu')} / {zf.get('zang')} ({zf.get('tejidos', '')})",
+        f"Emoción: {zf.get('emocion') or '—'} · sentido {zf.get('sentido') or '—'} · sabor {zf.get('sabor') or '—'}",
+        "Patrones: " + zh_patrons(zf.get("patrones") or []),
+        "Enfermedades que nombra el tratado:",
+        *[f"  - {e}" for e in (zf.get("enfermedades_tratado") or [])],
+        "",
+        "=== 食疗 ancestral (se nombra, no se dosifica) ===",
+        "Hierbas: " + zh_herbs(sl.get("hierbas") or []),
+        f"Té tradicional: {sl.get('te') or '—'}",
+        "Alimentos: " + ", ".join(sl.get("alimentos") or []),
+        "Evitar según el registro: " + ", ".join(sl.get("evitar") or []),
+        "Consejos de tratado:",
+        *[f"  - {c}" for c in (sl.get("consejos") or [])],
+        "",
         f"Estación local ({th['hemisferio']}, {th['estacion_local_ahora']}): {th['habito_estacion_ahora']}",
-        "Nota: estas correspondencias son histórico-simbólicas; no constituyen diagnóstico, receta ni predicción clínica.",
+        f"Hábito de clima: {th.get('habito_clima', '')}",
+        "ENCUADRE: experimento con IA y tradición ancestral. Vocabulario de tratado, no verdad clínica, no receta, no años de vida.",
     ]
     return "\n".join(lines)
 

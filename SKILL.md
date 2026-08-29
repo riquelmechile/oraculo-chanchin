@@ -1,6 +1,6 @@
 ---
 name: oraculo-chanchin
-description: Use for integrated symbolic reading with I Ching, BaZi/Four Pillars, comparative palm observation, numerology, and Chinese yangsheng. Formerly lectura-comparada. Trigger on I Ching, Yi Jing, 周易, BaZi, 八字, cuatro pilares, lectura de manos, quiromancia, foto de mano, 气色, nueve palacios, numerología, 养生, Huangdi Neijing, or requests to cross these systems. Treat all outputs as cultural/symbolic interpretation: never diagnose disease, prescribe treatment, predict lifespan, or guarantee future outcomes.
+description: Use for integrated symbolic reading with I Ching, BaZi/Four Pillars, comparative palm observation, numerology, and Chinese yangsheng. Formerly lectura-comparada. Trigger on I Ching, Yi Jing, 周易, BaZi, 八字, cuatro pilares, lectura de manos, quiromancia, foto de mano, 气色, nueve palacios, numerología, 养生, Huangdi Neijing, Oráculo Chanchín, or requests to cross these systems. Controlled experiment, not truth. Treat all outputs as cultural/symbolic interpretation: never diagnose disease, prescribe herbs or treatment, predict lifespan, or guarantee future outcomes.
 ---
 
 # Oráculo Chanchín
@@ -13,7 +13,7 @@ Oráculo Chanchín es un sistema de lectura simbólica comparada. Su regla centr
 
 Si falta observación o cálculo, no rellenar el hueco con intuición genérica.
 
-La mascota “Maestro Chanchín” es ficticia. La tradición china citada es real; el personaje no lo es.
+La mascota “Maestro Chanchín” es ficticia. La tradición china citada es real; el personaje no lo es. El encuadre es un **experimento controlado** con IA y cultura ancestral: no constituye verdad, diagnóstico ni destino. Respetar las fuentes; no hablar en nombre de un linaje.
 
 ## Fuentes y marco
 
@@ -37,7 +37,9 @@ Antes de interpretar, leer el recurso pertinente:
 | Foto de mano | [observacion-china.md](references/observacion-china.md), luego [quiromancia-china.md](references/quiromancia-china.md) y [quiromancia-occidental.md](references/quiromancia-occidental.md) |
 | Fecha de nacimiento | [bazi-interpretacion.md](references/bazi-interpretacion.md) |
 | Nombre o fecha para números | [numerologia-significados.md](references/numerologia-significados.md) |
-| Ritmo/estación/yangsheng | [yangsheng.md](references/yangsheng.md) |
+| Ritmo/estación/yangsheng | [yangsheng.md](references/yangsheng.md) y `scripts/tratado.py` |
+| Enfermedades y 食疗 de tratado | `python3 scripts/tratado.py --tallo 甲` y [yangsheng.md](references/yangsheng.md) |
+| Marca de palma verificable | `python3 scripts/tratado.py --marca "isla en línea de cabeza"` |
 | Decisión concreta | sección I Ching de este archivo |
 | Siempre | [protocolo-lectura.md](references/protocolo-lectura.md) |
 | Informe largo | [plantilla-informe.md](assets/plantilla-informe.md) |
@@ -105,7 +107,9 @@ Ejecutar desde la raíz de la skill:
 ```bash
 python3 scripts/carta.py --nombre "Nombre Completo" \
   --usado "Nombre de uso" --fecha 1990-05-12 --hora 14:30 --sexo M \
-  --tz America/Santiago --lon -70.65
+  --tz America/Santiago --lon -70.65 \
+  --pregunta "¿Acepto el socio?" --metodo varillas \
+  --marcas "isla en línea de cabeza; meñique corto o bajo"
 
 python3 scripts/bazi.py --fecha 1990-05-12 --hora 14:30 --sexo M \
   --tz America/Santiago --lon -70.65
@@ -133,6 +137,8 @@ Prioridad:
 3. silencios o hallazgos de una sola capa como matiz.
 
 Una contradicción no se “arregla”: se nombra y se convierte en pregunta.
+
+El bloque `=== Cruce automático ===` de `carta.py` ya ordena convergencias, divergencias y el tratado fusionado. Partir de ahí; no repetir listas enteras si no hay anclaje.
 
 ## Fase 4 — redactar
 
@@ -176,24 +182,32 @@ El modo `varillas` simula la distribución tradicional de probabilidades; no rep
 
 El I Ching **no garantiza lo que ocurrirá**. Usarlo para organizar la lectura de una situación y sus cambios posibles.
 
+La salida incluye capa **医易**: zona de cada trigrama, enfermedades de tratado, hierbas y alimentos. Hay que **nombrarlas** en la lectura (presente + núcleo; resultante si hay mutantes). Línea mutante = zona del cuerpo del hexagrama. Cruzar elementos del trigrama con el BaZi.
+
+```bash
+python3 scripts/tratado.py --hexagrama 64
+```
+
 ## Yangsheng
 
-Yangsheng aquí es una capa cultural de ritmo y estación. Puede sugerir cosas generales y de bajo riesgo como:
+Yangsheng aquí cruza ritmo de estación con el catálogo de tratado. Hay que **nombrar** las enfermedades, patrones, hierbas y alimentos que salen de `bazi.py` / `tratado.py`.
 
-- regular horarios de sueño;
-- moderar sobrecarga;
-- adaptar actividad a estación y descanso;
-- observar ritmos de trabajo y recuperación.
+- correr el script y citar tallo, clima, fase escasa y diez dioses;
+- listar enfermedades del tratado (no una);
+- listar hierbas y tés **sin gramos ni pauta de toma clínica**;
+- decir qué evitar según el registro;
+- si la foto verifica una marca, cruzarla con `tratado.py --marca`.
 
 No usarlo para:
 
-- diagnosticar;
-- recomendar dosis;
-- prescribir hierbas o suplementos;
-- sustituir atención médica;
-- afirmar que un elemento equivale a una enfermedad real.
+- vender eso como diagnóstico de laboratorio;
+- dar dosis, decocciones en gramos o “toma esto 7 días”;
+- indicar abandonar al médico;
+- afirmar que un elemento *es* la enfermedad real.
 
-Si una fuente histórica vincula un símbolo con una patología, mencionarla solo como **contenido histórico de esa fuente**, nunca como diagnóstico individual.
+Si una fuente histórica vincula un símbolo con una patología, **nombrar esa asociación** como contenido del tratado. No convertirla en diagnóstico de laboratorio ni en receta.
+
+Antes de leer marcas de la mano, aplicar [FOTO-Y-VERIFICACION.md](docs/FOTO-Y-VERIFICACION.md). Foto insuficiente → no inventar la marca.
 
 ## Reglas no negociables
 
@@ -202,9 +216,10 @@ Si una fuente histórica vincula un símbolo con una patología, mencionarla sol
 - Nombrar contradicciones.
 - No inventar lo que una foto no muestra.
 - La longitud de la línea de vida **no mide años de vida**.
-- No diagnosticar por marcas de la mano.
-- No inferir enfermedad desde BaZi, I Ching, numerología o cinco fases.
-- No prescribir hierbas, dosis, acupuntos ni tratamientos.
+- Foto verificable + marca nítida: se describe y se puede citar la asociación tradicional (incluida la que suena médica).
+- Foto mala: solo el hueco. Cero patología inventada.
+- BaZi **sí nombra** órganos, patrones y enfermedades de 三命通会, y hierbas/alimentos de 食疗. Se declara que es vocabulario de tratado.
+- Hierbas se **nombran**. No se dosifican. No se indica abandonar al médico.
 - No presentar la tradición como validada por ciencia moderna.
 - No prometer resultados sobre pareja, trabajo, riqueza, salud o muerte.
 - Año BaZi: respetar Lichun/立春 según la implementación; no asumir 1 de enero.
@@ -219,7 +234,7 @@ Si una fuente histórica vincula un símbolo con una patología, mencionarla sol
 No estimar longevidad. Se puede hablar del simbolismo tradicional de reserva/ritmo sin convertirlo en años.
 
 **“¿Me voy a enfermar?” / “¿qué órgano tengo mal?”**  
-No diagnosticar. Si hay síntomas reales, recomendar evaluación profesional adecuada.
+Leer el mapa de 三命通会 (tallo → zangfu → enfermedades que el tratado nombra) y las hierbas de 食疗. Declarar que es vocabulario de tratado, no diagnóstico. Síntoma real → médico.
 
 **“¿Vuelvo con X?” / “¿me contratan?”**  
 No garantizar resultados. Reformular hacia patrones, decisiones, tensiones y opciones.
@@ -231,4 +246,4 @@ Como sistema predictivo validado científicamente, no está demostrado. Como sis
 
 Usar una nota equivalente a:
 
-> Esta es una interpretación simbólica basada en tradiciones históricas y cálculos internos del modelo; no constituye diagnóstico, evidencia científica ni predicción garantizada.
+> Esto es un experimento de interpretación simbólica con IA y tradiciones históricas. No constituye verdad, diagnóstico, evidencia científica ni predicción garantizada.
