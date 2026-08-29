@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+  <title id="title">Maestro Chanchín — Oráculo Chanchín</title>
+  <desc id="desc">Mascota ficticia: un sabio oraculista con túnica, tallos de milenrama y un hexagrama del I Ching.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#10151d"/>
+      <stop offset="1" stop-color="#242a33"/>
+    </linearGradient>
+    <linearGradient id="robe" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9f1d24"/>
+      <stop offset="1" stop-color="#5f1116"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f5d78b"/>
+      <stop offset="1" stop-color="#b6882d"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="620" rx="32" fill="url(#bg)"/>
+  <circle cx="925" cy="308" r="212" fill="none" stroke="#d8ad52" stroke-opacity="0.16" stroke-width="2"/>
+  <circle cx="925" cy="308" r="160" fill="none" stroke="#d8ad52" stroke-opacity="0.12" stroke-width="2"/>
+
+  <!-- Hexagrama ䷊ / Tai, usado aquí solo como motivo gráfico -->
+  <g transform="translate(838 215)" stroke="#e6c46a" stroke-width="14" stroke-linecap="round" opacity="0.92">
+    <line x1="0" y1="0" x2="175" y2="0"/>
+    <line x1="0" y1="34" x2="175" y2="34"/>
+    <line x1="0" y1="68" x2="175" y2="68"/>
+    <line x1="0" y1="102" x2="70" y2="102"/><line x1="105" y1="102" x2="175" y2="102"/>
+    <line x1="0" y1="136" x2="70" y2="136"/><line x1="105" y1="136" x2="175" y2="136"/>
+    <line x1="0" y1="170" x2="70" y2="170"/><line x1="105" y1="170" x2="175" y2="170"/>
+  </g>
+
+  <!-- Maestro -->
+  <g transform="translate(150 72)" filter="url(#shadow)">
+    <!-- bastón/tallos -->
+    <g stroke="#c99e49" stroke-width="7" stroke-linecap="round">
+      <path d="M82 136 C45 246 57 354 39 474"/>
+      <path d="M101 128 C72 239 90 354 77 482"/>
+      <path d="M121 139 C98 245 115 366 109 480"/>
+    </g>
+    <g fill="#d9b65f">
+      <ellipse cx="81" cy="133" rx="15" ry="7" transform="rotate(-28 81 133)"/>
+      <ellipse cx="103" cy="126" rx="15" ry="7" transform="rotate(16 103 126)"/>
+      <ellipse cx="122" cy="138" rx="15" ry="7" transform="rotate(34 122 138)"/>
+    </g>
+
+    <!-- cuerpo/túnica -->
+    <path d="M185 247 C215 215 292 207 327 249 C369 300 377 411 348 482 L156 482 C132 412 142 306 185 247Z" fill="url(#robe)" stroke="#d9b65f" stroke-width="5"/>
+    <path d="M193 261 C235 297 288 300 326 260" fill="none" stroke="#e4c476" stroke-width="5"/>
+    <path d="M253 299 L253 473" stroke="#e4c476" stroke-width="4" opacity="0.8"/>
+    <circle cx="253" cy="337" r="8" fill="#e4c476"/>
+    <circle cx="253" cy="382" r="8" fill="#e4c476"/>
+
+    <!-- cuello y cabeza -->
+    <rect x="222" y="201" width="62" height="60" rx="24" fill="#d8aa80"/>
+    <ellipse cx="254" cy="157" rx="83" ry="94" fill="#d8aa80" stroke="#2b211d" stroke-width="5"/>
+
+    <!-- cabello/capucha -->
+    <path d="M173 155 C176 72 220 39 260 39 C316 40 342 85 336 157 C321 112 294 92 254 93 C215 93 192 113 173 155Z" fill="#e9e7df" stroke="#2a2d32" stroke-width="5"/>
+    <path d="M176 164 C163 205 182 235 207 249" fill="none" stroke="#e9e7df" stroke-width="19" stroke-linecap="round"/>
+    <path d="M332 164 C343 205 325 237 302 250" fill="none" stroke="#e9e7df" stroke-width="19" stroke-linecap="round"/>
+
+    <!-- cejas/ojos -->
+    <path d="M210 145 Q229 133 244 144" fill="none" stroke="#3b3029" stroke-width="7" stroke-linecap="round"/>
+    <path d="M264 144 Q282 132 299 144" fill="none" stroke="#3b3029" stroke-width="7" stroke-linecap="round"/>
+    <path d="M213 158 Q228 167 243 158" fill="none" stroke="#24272c" stroke-width="5" stroke-linecap="round"/>
+    <path d="M266 158 Q281 167 296 158" fill="none" stroke="#24272c" stroke-width="5" stroke-linecap="round"/>
+
+    <!-- nariz, bigote y barba -->
+    <path d="M254 158 Q247 184 256 188" fill="none" stroke="#8c664d" stroke-width="4" stroke-linecap="round"/>
+    <path d="M251 194 C232 184 217 192 207 204 C226 199 239 204 252 212" fill="#eeeae2" stroke="#353535" stroke-width="3"/>
+    <path d="M257 194 C276 183 294 191 304 204 C284 198 271 204 256 212" fill="#eeeae2" stroke="#353535" stroke-width="3"/>
+    <path d="M222 207 C225 287 285 291 296 208 C284 241 273 275 256 294 C238 274 228 242 222 207Z" fill="#ece9e0" stroke="#353535" stroke-width="4"/>
+
+    <!-- gorro simple -->
+    <path d="M192 87 Q252 26 316 88 L300 107 Q254 78 209 108Z" fill="#282f38" stroke="#d8ad52" stroke-width="5"/>
+    <circle cx="254" cy="76" r="13" fill="url(#gold)"/>
+
+    <!-- mano sosteniendo varillas -->
+    <ellipse cx="150" cy="314" rx="37" ry="30" fill="#d8aa80" transform="rotate(-15 150 314)"/>
+    <path d="M161 306 Q119 331 92 323" fill="none" stroke="#d8aa80" stroke-width="20" stroke-linecap="round"/>
+  </g>
+
+  <g transform="translate(520 105)">
+    <text x="0" y="0" fill="#e7c66f" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="34" font-weight="700" letter-spacing="3">ORÁCULO</text>
+    <text x="0" y="78" fill="#f4f1e8" font-family="Georgia, 'Times New Roman', serif" font-size="76" font-weight="700">Chanchín</text>
+    <text x="2" y="128" fill="#c9ccd1" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="24">I Ching · BaZi · mano · números · yangsheng</text>
+    <line x1="0" y1="166" x2="550" y2="166" stroke="#d8ad52" stroke-opacity="0.5"/>
+    <text x="0" y="218" fill="#f4f1e8" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="28" font-weight="600">“No te digo qué va a pasar.</text>
+    <text x="0" y="258" fill="#f4f1e8" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="28" font-weight="600">Te ayudo a leer qué está cambiando.”</text>
+    <text x="0" y="320" fill="#aeb3bb" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="19">Mascota ficticia · tradición como cultura, no como ciencia</text>
+  </g>
+</svg>
